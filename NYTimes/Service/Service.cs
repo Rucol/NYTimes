@@ -1,98 +1,66 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using NYTimesInterfaces;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using NYTimesInterfaces;
 using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;  
+using System.Text.Json;
+using System.Threading.Tasks;
 
-
-
-public class Service : INYTimesService
+namespace NYTimes.Service
 {
-    private readonly IConfiguration _config;
-
-    public Service()
+    public class NYTimesService : INYTimesService
     {
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        public HttpClient _httpClient;
 
-        _config = builder.Build();
-    }
-    public async Task<string> GetArticleContentAsync(string url)
-    {
-        using (var client = new HttpClient())
+        public NYTimesService(HttpClient httpClient)
         {
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage response = await client.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
-            {
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                dynamic json = JsonConvert.DeserializeObject(responseBody);
-
-                return json.response.content.docs[0].content[0].value;
-            }
-            else
-            {
-                throw new Exception($"Wystąpił błąd: {response.StatusCode}");
-            }
+            _httpClient = httpClient;
         }
-    }
 
-
-    public async Task<List<Article>> SearchAsync(string searchTerm)
-    {
-        IConfigurationSection nytimesSection = _config.GetSection("NYTimes");
-        var apiKey = nytimesSection["ApiKey"];
-
-        List<Article> articles = new List<Article>();
-
-        using (var client = new HttpClient())
+        public async Task<List<MyArticle>> SearchAsync(string query)
         {
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            string url = $"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={searchTerm}&api-key={apiKey}&sort=newest";
-
-            HttpResponseMessage response = await client.GetAsync(url);
+            var uri = new Uri($"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={query}&api-key=yourkey");
+            var response = await _httpClient.GetAsync(uri);
 
             if (response.IsSuccessStatusCode)
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var articles = JsonSerializer.Deserialize<NYTimesApiResponse>(responseContent)?.Response?.Docs;
 
-                dynamic json = JsonConvert.DeserializeObject(responseBody);
-
-                foreach (var article in json.response.docs)
+                if (articles != null)
                 {
-                    articles.Add(new Article
+                    var myArticles = new List<MyArticle>();
+
+                    foreach (var article in articles)
                     {
-                        Headline = article.headline.main,
-                        Snippet = article.snippet,
-                        PublicationDate = article.pub_date
-                    });
+                        myArticles.Add(new MyArticle(article.Headline.Main ?? "", article.Abstract ?? "", article.WebUrl ?? ""));
+                    }
+
+                    return myArticles;
                 }
             }
-            else
+
+            return new List<MyArticle>();
+        }
+
+        public async Task<string> GetArticleContentAsync(string articleUrl)
+        {
+            var response = await _httpClient.GetAsync(articleUrl);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                throw new Exception($"Wystąpił błąd: {response.StatusCode}");
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return responseContent;
+            }
+            return string.Empty;
+        }
+
+        public void SetHttpClient(HttpClient httpClient)
+        {
+            if (_httpClient == null)
+            {
+                _httpClient = httpClient;
             }
         }
 
-        return articles;
-    }
-
-    public class Article
-    {
-        public string Headline { get; set; }
-        public string Snippet { get; set; }
-        public string Content { get; set; }
-        public DateTime PublicationDate { get; set; }
     }
 }

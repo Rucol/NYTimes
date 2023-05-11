@@ -1,9 +1,12 @@
-﻿<Application x:Class="NYTimes.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:NYTimes"
-             StartupUri="MainWindow.xaml">
+﻿<Application
+            xmlns:local="clr-namespace:NYTimes;assembly="
+          x:Class="NYTimes.App"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <local:NYTimesServiceFactory x:Key="NYTimesServiceFactory" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,16 +1,20 @@
-﻿using NYTimesInterfaces;
+﻿using NYTimes.Service;
+using NYTimesInterfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Windows;
-using NYTimes;
+using System.Windows.Markup;
 
 namespace NYTimes
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly INYTimesService _nyTimesService;
-        private List<Article> _articles;
-        public List<Article> Articles
+        private List<NYTimesInterfaces.MyArticle> _articles;
+        public List<NYTimesInterfaces.MyArticle> Articles
         {
             get => _articles;
             set
@@ -30,14 +34,16 @@ namespace NYTimes
                 OnPropertyChanged(nameof(SearchTerm));
             }
         }
-
-        public MainWindow(INYTimesService nyTimesService)
+        // Jak zmienić aby domyślnie wczytywało ten konstruktor a nie domyślny
+        public MainWindow(INYTimesService nyTimesService, HttpClient httpClient)
         {
             InitializeComponent();
             DataContext = this;
             _nyTimesService = nyTimesService;
-            Articles = new List<Article>();
+            _nyTimesService.SetHttpClient(httpClient);
+            Articles = new List<NYTimesInterfaces.MyArticle>();
         }
+
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -46,11 +52,11 @@ namespace NYTimes
 
             if (!string.IsNullOrEmpty(SearchTerm))
             {
-                Articles = await _nyTimesService.GetArticleContentAsync(SearchTerm);
+                Articles = await _nyTimesService.SearchAsync(SearchTerm);
 
                 if (Articles.Count > 0)
                 {
-                    MessageBox.Show("Udalo sie!");
+                    MessageBox.Show("Udało się!");
                 }
 
                 ListBoxArticles.Items.Refresh();
@@ -59,11 +65,11 @@ namespace NYTimes
 
         private async void ListBoxArticles_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            Article selectedArticle = ListBoxArticles.SelectedItem as Article;
+            NYTimesInterfaces.MyArticle selectedArticle = ListBoxArticles.SelectedItem as NYTimesInterfaces.MyArticle;
 
             if (selectedArticle != null)
             {
-                selectedArticle.Content = await _nyTimesService.GetArticleContentAsync(selectedArticle.Content);
+                selectedArticle.Content = await _nyTimesService.GetArticleContentAsync(selectedArticle.Url);
 
                 MessageBox.Show(selectedArticle.Content);
             }
@@ -76,19 +82,12 @@ namespace NYTimes
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public class Article
+        public class MyArticle : NYTimesInterfaces.MyArticle
         {
-            public string Headline { get; set; }
-            public string Snippet { get; set; }
             public string Content { get; set; }
-            public string PublicationDate { get; set; }
 
-            public Article(NYTimesService.Article article)
+            public MyArticle(string headline, string snippet, string url) : base(headline, snippet, url)
             {
-                Headline = article.Headline;
-                Snippet = article.Snippet;
-                Content = article.Content;
-                PublicationDate = article.PublicationDate;
             }
         }
     }
