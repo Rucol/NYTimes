@@ -40,7 +40,7 @@ namespace NYTimes.ViewModel
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={query}&api-key=TlGVAG0Xbiacm9eP6VXUdUPZ8W51AJM2"),
+                RequestUri = new Uri($"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={query}&api-key="YourApiKey"),
                 Headers =
                 {
                     { "X-RapidAPI-Key", "82e608ca0amshfb8be84d382c693p152ebejsn0ed3121d87c8" },
