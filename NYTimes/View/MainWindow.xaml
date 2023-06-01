@@ -1,0 +1,60 @@
+﻿<Window x:Class="NYTimes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NYTimes"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="1350"
+        MinWidth="428"
+        WindowStyle="none"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="MainColor" Color="#800020"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#FFD700"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#FDF5E6"/>
+        <SolidColorBrush x:Key="LinkColor" Color="#800020"/>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Border Background="{StaticResource MainColor}"
+                    BorderBrush="{StaticResource AccentColor}"
+                    BorderThickness="5"
+                    CornerRadius="8,8,0,8"/>
+        </Grid>
+
+        <TextBox x:Name="SearchTerm" Background="AliceBlue" TextAlignment="Center" FontSize="20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" KeyDown="SearchTerm_KeyDown"/>
+        <Button Grid.Column="1" x:Name="SearchButton" Background="{StaticResource BackgroundColor}" Click="SearchButton_Click" FontSize="30" Foreground="{StaticResource MainColor}">Szukaj</Button>
+        <DataGrid x:Name="Tabelka" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Articles}" PreviewMouseLeftButtonUp="Tabelka_PreviewMouseLeftButtonUp">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="5*" Binding="{Binding Headline.MainHeadline}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource LinkColor}"/>
+                            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                            <Setter Property="TextDecorations" Value="Underline"/>
+                            <Setter Property="FontSize" Value="20"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock x:Name="Wpisywanie" Grid.Row="1" Margin="5,0,5,5" TextWrapping="Wrap" Text="{Binding as}" Grid.ColumnSpan="2"/>
+    </Grid>
+</Window>

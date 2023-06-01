@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NYTimes", "NYTimes\NYTimes.csproj", "{21089C66-6FE5-4FF1-ABEE-EA1D1B60222B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NYTimes", "NYTimes\NYTimes.csproj", "{DCC33A56-F88D-4F86-9680-45228A6A1DF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{21089C66-6FE5-4FF1-ABEE-EA1D1B60222B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21089C66-6FE5-4FF1-ABEE-EA1D1B60222B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21089C66-6FE5-4FF1-ABEE-EA1D1B60222B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21089C66-6FE5-4FF1-ABEE-EA1D1B60222B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCC33A56-F88D-4F86-9680-45228A6A1DF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCC33A56-F88D-4F86-9680-45228A6A1DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCC33A56-F88D-4F86-9680-45228A6A1DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCC33A56-F88D-4F86-9680-45228A6A1DF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0DB3CB12-F415-4EDD-B4BE-2705FE0136F6}
+		SolutionGuid = {92F3852F-A64E-457B-9FED-FCB7593481B3}
 	EndGlobalSection
 EndGlobal
